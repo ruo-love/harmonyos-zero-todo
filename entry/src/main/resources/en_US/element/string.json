@@ -6,19 +6,19 @@
     },
     {
       "name": "EntryAbility_desc",
-      "value": "description"
+      "value": "ToDo description"
     },
     {
       "name": "EntryAbility_label",
-      "value": "label"
+      "value": "ToDo"
     },
     {
       "name": "DetailAbility_desc",
-      "value": "description"
+      "value": "ToDo detail description"
     },
     {
       "name": "DetailAbility_label",
-      "value": "label"
+      "value": "ToDo detail"
     }
   ]
 }

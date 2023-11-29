@@ -1,21 +1,33 @@
-import  router from '@ohos.router'
 import AppContext from '@ohos.app.ability.common';
-import ToDo from '../mode/ToDo';
 import ToDoHeader from '../view/ToDoHeader';
 import ToDoItemCard from '../view/ToDoItemCard';
 import ToDoSearch from '../view/ToDoSearch';
-import ToDoListData from '../viewmode/TodoListData';
+import ToDoListViewMode from '../viewmode/ToDoViewMode';
 import Want from '@ohos.app.ability.Want';
+import { ToDo } from '../mode/ToDoListData';
 
+const toDoListViewMode=new ToDoListViewMode();
 @Entry
 @Component
 struct MainPage {
   @State @Watch('initToDoListData') keyword:string = '';
   @State currentTodoListData:Array<ToDo> = [];
   initToDoListData(){
-    const _data = ToDoListData;
-    console.log(this.keyword,'keyword');
+    const _data = toDoListViewMode.getTodoListData();
     this.currentTodoListData = _data.filter((item)=>item.title.includes(this.keyword));
+  }
+  enterDetail(todo:ToDo,context:AppContext.UIAbilityContext){
+    const want: Want = {
+      bundleName: context.applicationInfo.name,
+      abilityName: 'DetailAbility',
+      parameters: {
+        todoId:todo.id
+      }
+    };
+    try {
+      context.startAbility(want);
+    } catch (error) {
+    }
   }
   aboutToAppear(){
     this.initToDoListData();
@@ -24,24 +36,12 @@ struct MainPage {
     Column(){
       ToDoHeader({text: 'Zero',total:this.currentTodoListData.length})
       ToDoSearch({keyword:$keyword})
-      ForEach(this.currentTodoListData,(item:ToDo)=>{
-        ToDoItemCard({todoItem:item})
+      ForEach(this.currentTodoListData,(todo:ToDo)=>{
+        ToDoItemCard({todo:todo})
           .onClick(()=>{
-            const want: Want = {
-              bundleName: getContext(this).applicationInfo.name,
-              abilityName: 'DetailAbility',
-              parameters: {
-                todoId:item.id
-              }
-            };
-            try {
-              const context = getContext(this) as AppContext.UIAbilityContext
-              context.startAbility(want);
-            } catch (error) {
-
-            }
+           this.enterDetail(todo,getContext(this) as AppContext.UIAbilityContext)
           })
-      },(item:ToDo)=>item.id)
+      },(todo:ToDo)=>todo.id)
     }
     .alignItems(HorizontalAlign.Start)
     .padding(30)
