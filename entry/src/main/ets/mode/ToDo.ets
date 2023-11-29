@@ -7,7 +7,7 @@
  */
 @Observed
 class ToDo{
-  constructor(public title:string,public content:string,public completed:boolean ,public createTime: Date,public notificationTime: Date) {
+  constructor(public id:string ,public title:string,public content:string,public completed:boolean ,public createTime: Date,public notificationTime: Date) {
   }
 }
 export default ToDo
